@@ -1,54 +1,73 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Scanner;
-import java.util.Random;
+import java.util.*;
 
 public class Main {
     final int NumeroColoresCombinacion = 4;
     final int NumeroColoresJuego=6;
-    public void main(String[] args) {
+    public static void main(String[] args) {
 
-        Combinacion combinacion=new Combinacion();
-        char[] correcto = new char[3];
+       ArrayList<Integer> listaUnica =new ArrayList<>(5);
         Random random = new Random();
-        for (int x=0;x<3;x++){
-            int numeroAleatorio = random.nextInt(6);
-            correcto[x] = combinacion.getTablaColores()[numeroAleatorio];
+        Colores colors=new Colores();
+        listaUnica.add(random.nextInt(6));
+        boolean noAdd=true;
+            for (int x = 0; x < 5; x++) {
+                int randomNumber=random.nextInt(6);
+
+                for (Integer check:listaUnica) {
+
+
+                    if (check==randomNumber){
+                        x=x-1;
+                        noAdd=false;
+                    }
+                }
+                if(noAdd){
+                    listaUnica.add(randomNumber);
+                }else{
+                    noAdd=true;
+                }
+
+            }
+            ArrayList<Character> colorList =new ArrayList<>();
+        for (Integer lista: listaUnica) {
+            colorList.add(colors.getTablaColores()[lista]);
         }
-        for (int x=0;x<3;x++){
-            System.out.println(correcto[x]);
+        for (Character lista:colorList
+             ) {
+            System.out.println(lista);
         }
-        char[] combi = new char[3];
+        ArrayList<Character> combi =new ArrayList<>();
+        //Users combi
 
         Scanner scanner = new Scanner(System.in);
-
-        for (int x=0;x<3;x++) {
-            System.out.print("Ingrese color: ");
-            combi[x] = scanner.next().charAt(0);
-        }
-        EvaluacionCombinacion(combi,correcto);
-
+        int NumberTrys=10;
+        do {
+            System.out.println("You have " + NumberTrys + " attempts remaining");
+            for (int x = 0; x < 6; x++) {
+                System.out.print("Insert Color: ");
+                combi.add(scanner.next().charAt(0));
+            }
+            if(EvaluacionCombinacion(combi, colorList)==1){
+                System.out.println("You won!");
+                break;
+            }else {
+                NumberTrys=NumberTrys-1;
+                combi.clear();
+            }
+            if(NumberTrys==0){
+                System.out.println("You lose");
+            }
+        }while (NumberTrys!=0);
     }
-    public class Combinacion
-    {
-        char[] Combi; /* Tabla de NumColoresCombinacion elementos que representa la combinación */
-        char[] TablaColores={'R', 'A', 'V', 'Z', 'M', 'B'};/* Posibles colores dentro del juego */
-        /* ... Definiciones de Métodos ... */
 
-        public char[] getTablaColores() {
-            return TablaColores;
-        }
-
-        public void setTablaColores(char[] tablaColores) {
-            TablaColores = tablaColores;
-        }
-    }
-    public static void EvaluacionCombinacion(char[] combi, char[] resultado){
-        boolean sonIguales = Arrays.equals(combi, resultado);
+    public static int EvaluacionCombinacion(ArrayList<Character> combi, ArrayList<Character> resultado){
+        boolean sonIguales = combi.equals(resultado);
         if (sonIguales){
             System.out.println("Combinacion correct");
+            return 1;
         }else{
             System.out.println("Combinacion error");
+            return 0;
         }
     }
 
